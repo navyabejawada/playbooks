@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: yes
+  tasks: 
+  - name: install javaa
+    package:
+      name: java8
+      update_cache: yes
+      state: present
+  - name: install jenkins
+    package:
+      name: jenkins
+      state: present
+    notify:
+    - restart jenkins
+  handlers:
+  - name: restart jenkins
+    service:
+      name: jenkins
+      enabled: yes
+      state: restarted
