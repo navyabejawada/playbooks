@@ -1,0 +1,33 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: update and install apache
+    apt:
+      name: apache2
+      update_cache: yes
+      state: present
+  - name: restart apache2
+    service:
+      name: apache2
+      enabled: yes
+      state: restarted
+  - name: Install a list of packages
+    apt:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+      - php
+      - libapache2-mod-php
+      - php-mysql
+  - name: create a info.php
+    copy:
+      src: /home/ansible/playbooks/info.php
+      dest: /var/www/html/info.php
+  - name: restart after apache 
+    service:
+      name: apache2
+      enabled: yes
+      state: restarted
+  

@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: yes
+  vars:
+  - pack_name: apache2 
+  - php_packages:
+    - php
+    - php-mysql
+  tasks:
+  - name: update and install apache
+    package:
+      name: "{{ pack_name }}"
+      update_cache: yes
+      state: present
+    notify:
+    - restart apache
+  - name: Install a list of packages
+    package:
+      name: "{{ php_packages }}"
+      state: present
+  - name: create a info.php
+    copy:
+      src: /home/ansible/playbooks/info.php
+      dest: /var/www/html/info.php
+    notify:
+    - restart apache
+  handlers:
+  - name: restart apache
+    service: 
+      name: "{{ pack_name }}"
+      enabled: yes
+      state: restarted

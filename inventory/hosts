@@ -1,0 +1,16 @@
+[ubuntu]
+localhost
+ip-172-31-27-155.us-east-2.compute.internal
+
+[redhat]
+ip-172-31-34-128.us-east-2.compute.internal
+
+
+[ubuntu:vars]
+pack_name = apache2
+php_packages = ["php","libapache2-mod-php","php-mcrypt","php-mysql"]
+
+[redhat:vars]
+pack_name = httpd
+php_packages = ["php","php-mysql"]
+

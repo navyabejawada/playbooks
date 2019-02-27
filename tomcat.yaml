@@ -1,0 +1,33 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: installing java
+    apt: 
+      name: default-jdk
+      update_cache: yes
+      state: present
+  - name: Ensure group "tomcat" exists
+    group:
+      name: tomact
+      state: present
+  - name: Add the user 'tomcat' with a bash shell, appending the group 'tomcat'
+    user:
+      name: tomcat
+      groups: tomcat
+      state: present
+      shell: /bin/bash  
+      become_user: tomcat
+  - name: Download tomcat
+    get_url:
+      url: http://apache.mirrors.ionfish.org/tomcat/tomcat-8/v8.5.5/bin/apache-tomcat-8.5.5.tar.gz
+      dest: /home/tomcat
+  - name: Creates directory
+    file:
+      path: /opt/tomcat
+      state: directory
+      become_home: /opt/tomcat 
+  - name: Unzip a file
+    win_unzip:
+      src: /home/tomcat/apache-tomcat-8.5.5.tar.gz
+      dest: /opt/tomcat/

@@ -1,0 +1,35 @@
+---
+- hosts: all
+  become: yes
+  vars:
+  - perm_size: 512m
+  - min_size: 256m
+  tasks:
+  - name: install open jdk
+    package:
+      name: default-jdk
+      update_cache: yes
+      state: present
+  - name: install tomcat7
+    package:
+      name: tomcat7
+      state: present
+  - name: create file
+    template: 
+      src: /home/ansible/playbooks/tomcat7.j2
+      dest: /etc/default/tomcat7
+    notify:
+    - restart tomcat
+  - name: create a tomcatusers.xml
+    copy:
+      src: /home/ansible/playbooks/tomcat-users.xml
+      dest: /etc/tomcat7/tomcat-users.xml
+    notify:
+    - restart tomcat
+  handlers:
+  - name: restart tomcat
+    service: 
+      name: tomcat7
+      enabled: yes
+      state: restarted
+    

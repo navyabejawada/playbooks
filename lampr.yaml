@@ -1,0 +1,34 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: install httpd
+    yum:
+      name: httpd
+      state: present
+    notify:
+    - restart httpd
+    when: ansible_os_family=="RedHat"
+  - name: install php packs
+    yum:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+      - php
+      - php-mysql
+    when: ansible_os_family=="RedHat"
+  - name: create a info.php
+    copy:
+      src: info.php
+      dest: /var/www/html/info.php
+    notify:
+    - restart httpd
+    when: ansible_os_family=="RedHat"
+  handlers:
+  - name: restart httpd
+    service: 
+      name: httpd
+      enabled: yes
+      state: restarted
+    when: ansible_os_family=="RedHat"
